@@ -10,7 +10,7 @@
             <img src="../assets/play/playlist.png" alt="" width="18px" height="18px" @click="showList(playList)">
         </div>
         <audio ref='audio' loop>
-            <source :src="nowPlay.musicUrl?nowPlay.musicUrl:''">
+            <source :src="nowPlay.musicUrl" ref="source">
         </audio>
     </div>
 </template>
@@ -20,7 +20,8 @@ export default {
         return{
             nowPlay:{},
             playList:this.$store.state.playList,
-            palyFlag:false
+            palyFlag:false,
+            playIndex:this.$store.state.nowPlayIndex
         }
     },
     created(){
@@ -34,6 +35,30 @@ export default {
         
     },
     watch:{
+        '$store.state.nowPlayIndex'(){
+            //console.log(this.$store.state.nowPlayIndex)
+           this.$refs.audio.pause()
+           if(this.playList.length>0){
+                //console.log('11')
+                this.nowPlay = this.playList[this.$store.state.nowPlayIndex]
+                this.palyFlag = true
+                this.$refs.audio.src = this.nowPlay.musicUrl
+                this.$refs.audio.autoplay = true
+                
+                if(this.palyFlag){
+                    this.$refs.control.src = require('../assets/play/play.png')
+                    this.$refs.audio.play()
+                    this.$refs.musicImg.style.animationPlayState = 'running'
+                }
+           }else{
+               this.nowPlay = {}
+                this.palyFlag  = false
+                
+                this.$refs.control.src = require('../assets/play/stop.png')
+                this.$refs.audio.pause()
+                this.$refs.musicImg.style.animationPlayState = 'paused'
+           }
+        },
         '$store.state.playList':{
             handler(newVal,oldVal){
                 this.playList = this.$store.state.playList
@@ -48,52 +73,10 @@ export default {
             immediate:true,
             deep:true
         },
-        '$store.state.nowPlayIndex':{
-            handler(newVal,oldVal){
-                
-                console.log(this.playList)
-                if(this.playList.length>0){
-                    this.nowPlay = this.playList[this.$store.state.nowPlayIndex]
-                    //console.log(this.playList)
-                   
-                    this.$refs.audio.src = this.nowPlay.musicUrl
-                    
-                    this.$refs.audio.autoplay = true
-                    this.palyFlag = true
-                    if(this.palyFlag){
-                            this.$refs.control.src = require('../assets/play/play.png')
-                            this.$refs.audio.play()
-                            
-                            this.$refs.musicImg.style.animationPlayState = 'running'
-                        }else{
-                            this.$refs.control.src = require('../assets/play/stop.png')
-                            this.$refs.audio.pause()
-                            this.$refs.musicImg.style.animationPlayState = 'paused'
-                        }
-                }else{
-                    //console.log('aaa')
-                    this.palyFlag = false
-                    if(this.palyFlag){
-                            this.$refs.control.src = require('../assets/play/play.png')
-                            this.$refs.audio.play()
-                            
-                            this.$refs.musicImg.style.animationPlayState = 'running'
-                        }else{
-                            this.$refs.control.src = require('../assets/play/stop.png')
-                            this.$refs.audio.pause()
-                            this.$refs.musicImg.style.animationPlayState = 'paused'
-                        }
-                    this.nowPlay = {}
-                }
-                
-                
-            },
-            deep:true
-        },
         nowPlay:{
             handler(){
-                console.log(this.nowPlay)
                 return this.nowPlay
+
             },
             deep:true
         }

@@ -61,14 +61,15 @@ export default {
         },
         deleteMusic(index){
             let list = JSON.parse(localStorage.getItem('playList'))
+            
             list.splice(index,1)
-            console.log(list)
+            //console.log(list)
             if(list.length>0){
                 localStorage.setItem('playList',JSON.stringify(list))
-                this.$store.commit('getIndex',list.length-1)
+                this.$store.commit('getIndex',0)
                 
             }else{
-                localStorage.setItem('playList','')
+                localStorage.removeItem('playList')
                 this.$store.commit('getIndex','')
             }
             this.$store.commit('getPlayList',list)

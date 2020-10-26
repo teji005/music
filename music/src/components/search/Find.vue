@@ -1,7 +1,8 @@
 <template>
     <div class="find">
         <div class="searchBox">
-            <input type="text" placeholder="搜索音乐、视频、歌单、歌手、用户名等等" @focus="search" ref='search' v-model.trim="searchCode" @change="find">
+            <input type="text" placeholder="搜索音乐、视频、歌单、歌手、用户名等等" @focus="search" ref='search' v-model.trim="searchCode" @change="find"
+            >
             <img src="../../assets/x.png" alt="" v-if="searchCode.length" @click="clearCode"/>
         </div>
         <div class="banner">
@@ -9,9 +10,9 @@
             <div class="history" v-if="history.length>0">
                 <div class="d-flex jc-between">
                     <h3>历史搜索</h3>
-                    <img src="../../assets/delete.png" alt="" width="18px" @click="claerHistory">
+                    <img src="../../assets/delete.png" alt="" height="18px" width="18px" @click="claerHistory">
                 </div>
-                <div><span v-for="(item,index) in history" :key="index" @click="historySearch">{{item}}</span></div>
+                <div><span v-for="(item,index) in history" :key="index" @click="historySearch(item)">{{item}}</span></div>
             </div>
             <div class="top">
                 <h3>热门搜索</h3>
@@ -26,7 +27,7 @@
         </div>
         <div v-if="flag===1" class="searchCon">
             <ul>
-               <li v-for="song in searchCon" :key="song.songid">{{song.songname}}</li>
+               <li v-for="song in searchCon" :key="song.songid" @click="needSearch(song.songname)">{{song.songname}}</li>
             </ul>
         </div>
         <div v-if="flag===2" class="list">
@@ -53,6 +54,7 @@ export default {
         return{
             searchCode:'',
             flag:0,
+            changeFlag:0,
             history:[],
             page:1,
             num:15,
@@ -66,7 +68,10 @@ export default {
             if(this.searchCode===''){
                 this.flag=0
             }
-            this.getSearch()
+            if(this.changeFlag === 0){
+                this.getSearch()
+            }
+            
         }
     },
 
@@ -90,8 +95,11 @@ export default {
         
     },
     methods:{
+        test(){
+
+        },
         search(event){
-            
+            this.changeFlag = 0
             this.$refs.search.style.outline = 'none'
            
         },
@@ -99,22 +107,27 @@ export default {
             if(this.searchCode!==''){
                 this.flag = 1
             }
+            
             this.page = 1
             let url = `http://111.229.20.115:8001/music/list?w=${this.searchCode}&p=${this.page}&n=${this.num}&catZhida=0`
             let res = await this.$http.get(url)
             this.searchCon = res.data.data.list
+            console.log(this.searchCon)
             
         },
         async find(){
             if(this.searchCode ==='')return
             this.flag=2
             this.page = 1
-            this.history.push(this.searchCode)
-            localStorage.setItem('history',JSON.stringify(this.history))
+            if(this.changeFlag !== 1){
+                this.history.push(this.searchCode)
+                localStorage.setItem('history',JSON.stringify(this.history))
+            }
             let url = `http://111.229.20.115:8001/music/list?w=${this.searchCode}&p=${this.page}&n=${this.num}&catZhida=1`
             let res = await this.$http.get(url)
             this.searchList = res.data.data.list
             console.log(this.searchList)
+
         },
         clearCode(){
             this.searchCode = ''
@@ -142,7 +155,9 @@ export default {
 
             
             let list = []
+            console.log()
             if(!localStorage.getItem('playList')){
+                console.log('abc')
                 localStorage.setItem('playList',JSON.stringify(list))
             }
             list = JSON.parse(localStorage.getItem('playList'))
@@ -162,27 +177,30 @@ export default {
            
             
         },
-        async historySearch(event){
+        historySearch(item){
+            
+            this.changeFlag = 1 
+            this.searchCode = item
+            //console.log(typeof this.searchCon)
+            this.find()
             
             
-            
-            this.flag=2
-            this.page = 1
-            
-            let url = `http://111.229.20.115:8001/music/list?w=${event.target.childNodes[0].data}&p=${this.page}&n=${this.num}&catZhida=1`
-            let res = await this.$http.get(url)
-            this.searchList = res.data.data.list
+           
             
         },
-        async hotSearch(key){
-            this.flag=2
-            this.page = 1
-            this.history.push(key)
-            localStorage.setItem('history',JSON.stringify(this.history))
-            let url = `http://111.229.20.115:8001/music/list?w=${key}&p=${this.page}&n=${this.num}&catZhida=1`
-            let res = await this.$http.get(url)
-            this.searchList = res.data.data.list
-        }
+        hotSearch(key){
+            this.changeFlag = 1 
+            this.searchCode = key
+            //console.log(typeof this.searchCon)
+            this.find()
+        },
+        needSearch(name){
+             this.changeFlag = 1 
+            this.searchCode = name
+            //console.log(typeof this.searchCon)
+            this.find()
+        },
+
         
         
 
