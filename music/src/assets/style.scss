@@ -1,0 +1,74 @@
+html{
+    font-size: 14px;
+}
+
+
+$color:(
+    'primary':#1a73e8,
+    'black':black,
+    'white':white,
+    'gray1':#ccc,
+    'gray2':ragba(26,26,26,0.5)
+);
+@each $key,$val in $color {
+    //.text-primary : #1a73e8
+    .text-#{$key} {
+        color:$val;
+    }
+    .bg-#{$key}{
+        background-color: $val;
+    }
+}
+
+//flex
+.d-flex{
+    display: flex;
+}
+
+$flex-jc:(
+    'start':flex-start,
+    'end':'flex-end',
+    'center':center,
+    'between':space-between,
+    'around':space-around,
+    'evenly':space-evenly
+);
+
+@each $key,$val in $flex-jc{
+    .jc-#{$key}{
+        justify-content: $val;
+    }
+}
+
+$flex-ai:(
+    'start':flex-start,
+    'end':'flex-end',
+    'center':center,
+);
+
+@each $key,$val in $flex-jc{
+    .ai-#{$key}{
+        align-items: $val;
+    }
+}
+
+$text-base-size:1rem;
+$text-size:(
+    xs:0.8571,
+    sm:1,
+    md:1.1429,
+    lg:1.4286
+);
+
+@each $key,$val in $text-size{
+    .text-#{$key}{
+        font-size: $val*$text-base-size;
+    }
+}
+
+.pos-r{
+    position: relative;
+}
+.pos-a{
+    position: absolute;
+}

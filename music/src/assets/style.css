@@ -1,0 +1,119 @@
+html {
+  font-size: 14px;
+}
+
+.text-primary {
+  color: #1a73e8;
+}
+
+.bg-primary {
+  background-color: #1a73e8;
+}
+
+.text-black {
+  color: black;
+}
+
+.bg-black {
+  background-color: black;
+}
+
+.text-white {
+  color: white;
+}
+
+.bg-white {
+  background-color: white;
+}
+
+.text-gray1 {
+  color: #ccc;
+}
+
+.bg-gray1 {
+  background-color: #ccc;
+}
+
+.text-gray2 {
+  color: ragba(26, 26, 26, 0.5);
+}
+
+.bg-gray2 {
+  background-color: ragba(26, 26, 26, 0.5);
+}
+
+.d-flex {
+  display: flex;
+}
+
+.jc-start {
+  justify-content: flex-start;
+}
+
+.jc-end {
+  justify-content: "flex-end";
+}
+
+.jc-center {
+  justify-content: center;
+}
+
+.jc-between {
+  justify-content: space-between;
+}
+
+.jc-around {
+  justify-content: space-around;
+}
+
+.jc-evenly {
+  justify-content: space-evenly;
+}
+
+.ai-start {
+  align-items: flex-start;
+}
+
+.ai-end {
+  align-items: "flex-end";
+}
+
+.ai-center {
+  align-items: center;
+}
+
+.ai-between {
+  align-items: space-between;
+}
+
+.ai-around {
+  align-items: space-around;
+}
+
+.ai-evenly {
+  align-items: space-evenly;
+}
+
+.text-xs {
+  font-size: 0.8571rem;
+}
+
+.text-sm {
+  font-size: 1rem;
+}
+
+.text-md {
+  font-size: 1.1429rem;
+}
+
+.text-lg {
+  font-size: 1.4286rem;
+}
+
+.pos-r {
+  position: relative;
+}
+
+.pos-a {
+  position: absolute;
+}
