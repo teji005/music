@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 class="text-primary text-lg" style="text-align:center;font-weight:bold;margin-top:10px;margin-bottom:20px">Function Music</h1>
+        <h1 class="text-primary text-lg" style="text-align:center;font-weight:bold;margin-top:10px;margin-bottom:20px">TEJI Music</h1>
         <img src="../../assets/logo.png" alt="" class="pos-a" style="right:20px;top:10px; border-radius:50%;width:20px;height:20px">
         <div class="d-flex jc-around" style="margin-bottom:20px">
             <div v-for="item in navList" :key="item.name" :class="{'nav-active':item.path===$route.path,'text-gray1':true,'text-md':true}" @click="navClick(item.path)">{{item.name}}</div>

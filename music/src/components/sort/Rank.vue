@@ -1,7 +1,7 @@
 <template>
     <div class="rank">
         <ul class="rankList">
-            <li v-for="item in topList" :key="item.id" class="d-flex rankBox">
+            <li v-for="item in topList" :key="item.id" class="d-flex rankBox" @click="goDetail(item.id)">
                 <img :src="item.picUrl" alt="">
                 <div>
                     <ul class="d-flex">
@@ -24,6 +24,11 @@ export default {
         topList:{
             type:Array,
             require:true
+        }
+    },
+    methods:{
+        goDetail(id){
+            this.$router.push({path:'/detail',query:{id:id}})
         }
     }
 }

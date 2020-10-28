@@ -32,7 +32,7 @@ export default {
            let singerList=await this.$jsonp(singerUrl,data)
            singerList.singerList.data.singerlist.map((item,index)=>this.$set(this.singerList,index,item))
            
-           console.log(singerList)
+           //console.log(singerList)
             this.$store.commit('getSingerList',this.singerList)
            
            

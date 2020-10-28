@@ -10,7 +10,12 @@ export default new Vuex.Store({
     singerList:[],
     searchCode:'',
     playList:localStorage.getItem('playList')?JSON.parse(localStorage.getItem('playList')):[],
-    nowPlayIndex:''
+    nowPlayIndex:0,
+    detailList:[],
+    loadflag:true,
+    duration:0,
+    currentTime:0,
+    playflag:false
   },
   mutations: {
     getSwiper(state,list){
@@ -33,7 +38,22 @@ export default new Vuex.Store({
          state.playList = JSON.parse(localStorage.getItem('playList'))
       }
        
-    }
+    },
+    getDetailList(state,list){
+      state.detailList = list
+    },
+    getLoadflag(state,bool){
+      state.loadflag = bool
+    },
+    getduration(state,duration){
+        state.duration = duration
+    },
+    getcurrentTime(state,currentTime){
+      state.currentTime = currentTime
+  },
+    getPlayflag(state,bool){
+      state.playflag = bool
+    },
   },
   actions: {
    
@@ -47,6 +67,8 @@ export default new Vuex.Store({
     List:(state)=>{
       return state.playList
     },
+    
+    
 
   }
 })

@@ -1,8 +1,8 @@
 <template>
   <div class="hotbox">
     <swiper :options="swiperOption"  v-if="banners.length>0" >
-      <swiper-slide v-for="item in banners" :key="item">
-        <img :src="item" alt="" width="100%">
+      <swiper-slide v-for="(item,index) in banners" :key="index">
+        <img :src="item" alt="" width="100%" @click="goDetail(singer[index],item)">
       </swiper-slide>
     <div class="swiper-pagination" slot="pagination"></div>
     </swiper>
@@ -33,6 +33,8 @@ export default {
         return{
             hotList:[],
             banners:[],
+            singer:[],
+            
             swiperOption: {
                 pagination: {
                     el: '.swiper-pagination',
@@ -57,11 +59,17 @@ export default {
       this.getHotList()
     },
     methods:{
-       
+       goDetail(name,img){
+            this.$router.push({path:'/detail',query:{name:name,img:img}})
+       },
         async getSwiper(){
             let res = await this.$http.get('/lbt')
+            this.singer = res.data.lbt.data.map(item=>item.name)
+            //console.log(this.singer)
             res = res.data.lbt.data.map((item)=>'http://www.zhouyongju.com/usr/themes/zhouyongju/resource/app/music/lbt/'+item.img+'.jpg')
+            
             this.banners = res
+            
             
         },
         async getHotList(){
@@ -78,7 +86,7 @@ export default {
             return obj
           })
           this.hotList = res
-          console.log(res)
+          
         }
     }
 }

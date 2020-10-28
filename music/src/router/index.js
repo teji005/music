@@ -5,6 +5,11 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path:'/detail',
+    name:'datail',
+    component:()=>import('@/Detail')
+  },
   
   {
     path: '/',

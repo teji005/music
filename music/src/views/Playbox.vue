@@ -1,15 +1,15 @@
 <template>
-    <div class="palybox">
+    <div class="palybox" >
         
-         <img :src="nowPlay.img?nowPlay.img:require('../assets/logo.png')"  width="50px" height="50px" class="mesgImg" ref="musicImg">
-        <div style="margin-left:60px" class="songname">
+         <img :src="nowPlay.img?nowPlay.img:require('../assets/logo.png')"  width="50px" height="50px" class="mesgImg" ref="musicImg" @click="cangeLoad">
+        <div style="margin-left:60px" class="songname" @click="cangeLoad">
             {{nowPlay.songname?nowPlay.songname:''}}
         </div>
         <div >
             <img src="../assets/play/stop.png" alt="" width="18px" height="18px" @click="handleplay" ref="control">
             <img src="../assets/play/playlist.png" alt="" width="18px" height="18px" @click="showList(playList)">
         </div>
-        <audio ref='audio' loop>
+        <audio ref='audio' loop @timeupdate="timeupdate">
             <source :src="nowPlay.musicUrl" ref="source">
         </audio>
     </div>
@@ -35,6 +35,29 @@ export default {
         
     },
     watch:{
+        '$store.state.playflag'(){
+            this.palyFlag = this.$store.state.playflag
+            
+            if(this.palyFlag){
+                
+                let promise = this.$refs.audio.play()
+                if(promise){
+                    promise.then(()=>{
+                        
+                        this.$refs.audio.play()
+                        //console.log(this.$refs.audio)
+                        this.$store.commit('getduration',this.$refs.audio.duration)
+                        //console.log(this.$refs.audio.duration)
+                    }).catch(()=>{
+                        this.palyFlag =false
+                        this.$store.commit('getPlayflag',this.palyFlag)
+                    })
+                }
+            }else{
+                
+                this.$refs.audio.pause()
+            }
+        },
         '$store.state.nowPlayIndex'(){
             //console.log(this.$store.state.nowPlayIndex)
            this.$refs.audio.pause()
@@ -44,11 +67,26 @@ export default {
                 this.palyFlag = true
                 this.$refs.audio.src = this.nowPlay.musicUrl
                 this.$refs.audio.autoplay = true
+                this.$refs.audio.load()
                 
+                this.$store.commit('getduration',this.$refs.audio.duration)
                 if(this.palyFlag){
-                    this.$refs.control.src = require('../assets/play/play.png')
-                    this.$refs.audio.play()
-                    this.$refs.musicImg.style.animationPlayState = 'running'
+                    let promise = this.$refs.audio.play()
+                    if(promise){
+                        promise.then(()=>{
+                            
+                            this.$refs.audio.play()
+                            //console.log(this.$refs.audio)
+                            this.$store.commit('getduration',this.$refs.audio.duration)
+                            //console.log(this.$refs.audio.duration)
+                            this.$refs.control.src = require('../assets/play/play.png')
+                            this.$refs.musicImg.style.animationPlayState = 'running'
+                        }).catch(()=>{
+                            this.palyFlag =false
+                            this.$store.commit('getPlayflag',this.palyFlag)
+                        })
+                    }
+                      
                 }
            }else{
                this.nowPlay = {}
@@ -64,6 +102,7 @@ export default {
                 this.playList = this.$store.state.playList
                 if(this.playList.length>0){
                     this.nowPlay = this.playList[0]
+                    
                     //console.log(this.nowPlay)
                 }else{
                     this.nowPlay = {}
@@ -82,15 +121,34 @@ export default {
         }
     },
     methods:{
+        cangeLoad(){
+            this.$store.commit('getLoadflag',false)
+            this.$store.commit('getIndex',this.playIndex)
+
+        },
         handleplay(){
+            
             if(this.playList.length<1)return
             this.palyFlag = !this.palyFlag
             if(this.palyFlag){
-                this.$refs.control.src = require('../assets/play/play.png')
-                this.$refs.audio.play()
-                console.log(this.$refs.audio)
-                this.$refs.musicImg.style.animationPlayState = 'running'
+                let promise = this.$refs.audio.play()
+                if(promise){
+                    promise.then(()=>{
+                        this.$store.commit('getPlayflag',this.palyFlag)
+                        this.$refs.control.src = require('../assets/play/play.png')
+                        this.$refs.audio.play()
+                        //console.log(this.$refs.audio)
+                        this.$refs.musicImg.style.animationPlayState = 'running'
+                        this.$store.commit('getduration',this.$refs.audio.duration)
+                        console.log(this.$refs.audio.currentTime)
+                    }).catch(()=>{
+                        this.palyFlag =false
+                        this.$store.commit('getPlayflag',this.palyFlag)
+                    })
+                }
+                
             }else{
+                this.$store.commit('getPlayflag',this.palyFlag)
                 this.$refs.control.src = require('../assets/play/stop.png')
                 this.$refs.audio.pause()
                 this.$refs.musicImg.style.animationPlayState = 'paused'
@@ -100,6 +158,12 @@ export default {
         showList(list){
             this.$emit('showList',list)
         },
+        timeupdate(){
+            
+            this.$store.commit('getcurrentTime',this.$refs.audio.currentTime)
+            //console.log(this.$store.state.currentTime)
+            
+        }
     }
 }
 </script>
@@ -112,8 +176,9 @@ export default {
         background: #fafafa;
         z-index: 50;
         height: 50px;
-        position: relative;
-        bottom: 50px;
+        width: 100%;
+        position: fixed;
+        bottom: 0px;
         left: 0;
         .songname{
             margin-left: 10px;

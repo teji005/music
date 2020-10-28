@@ -1,22 +1,28 @@
 <template>
     <div>
-        <Head @navClick="navclick"></Head>
-        <Playbox @showList="showList"/>
-        <div class="listBox" ref="listBox">
-            <h3>歌单列表{{playList.length}}首</h3>
-            <ul class="list">
-                <li v-for="(list,index) in playList" :key="index" @click.prevent="changeMusic(index)">
-                    <div  >
-                    <span class="text-md">{{list.songname}} </span>
-                    <span class="text-gray1"> -{{list.singer}}</span>
-                    </div>
-                    <img src="./assets/x.png" width="16px" height="16px" @click="deleteMusic(index)"/>
-                   
-                </li>
-            </ul>
-            <div class="close" @click="hideList">关闭</div>
+        <div v-if="this.$store.state.loadflag">
+            <Head @navClick="navclick"></Head>
+            
         </div>
-        <div class="mask" ref="mask" @click="hideList"></div>
+        <div v-else>
+            <Load/>
+        </div>
+        <Playbox @showList="showList" v-show="this.$store.state.loadflag"/>
+            <div class="listBox" ref="listBox">
+                <h3>歌单列表{{playList.length}}首</h3>
+                <ul class="list">
+                    <li v-for="(list,index) in playList" :key="index" @click.prevent="changeMusic(index)" :class="{active:$store.state.nowPlayIndex===index?'true':''}">
+                        <div  >
+                        <span class="text-md">{{list.songname}} </span>
+                        <span class="text-gray1"> -{{list.singer}}</span>
+                        </div>
+                        <img src="./assets/x.png" width="16px" height="16px" @click="deleteMusic(index)"/>
+                    
+                    </li>
+                </ul>
+                <div class="close" @click="hideList">关闭</div>
+            </div>
+            <div class="mask" ref="mask" @click="hideList"></div>
     </div>
 </template>
 <script>
@@ -25,7 +31,8 @@ export default {
     name:'index',
     components:{
         Head,
-        Playbox:()=>import('./views/Playbox')
+        Playbox:()=>import('./views/Playbox'),
+        Load:()=>import('./views/Load')
 
     },
     data(){
@@ -138,5 +145,8 @@ export default {
             height: 50px;
             line-height: 50px;
             background: white;
+        }
+        .active{
+            color: greenyellow;
         }
 </style>
